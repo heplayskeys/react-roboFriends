@@ -3,6 +3,7 @@ import Title from "../components/Title";
 import SearchBox from "../components/SearchBox";
 import Scroll from "../components/Scroll";
 import CardList from "../components/CardList";
+import ErrorBoundry from "../components/ErrorBoundry";
 import "./App.css";
 
 class App extends React.Component {
@@ -37,7 +38,9 @@ class App extends React.Component {
 				<Title />
 				<SearchBox handleInput={this.handleInput} />
 				<Scroll>
-					<CardList robots={roboFilter} />
+					<ErrorBoundry>
+						<CardList robots={roboFilter} />
+					</ErrorBoundry>
 				</Scroll>
 			</div>
 		);	
