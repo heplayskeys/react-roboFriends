@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import Title from "../components/Title";
 import SearchBox from "../components/SearchBox";
 import Scroll from "../components/Scroll";
@@ -6,37 +7,43 @@ import CardList from "../components/CardList";
 import ErrorBoundry from "../components/ErrorBoundry";
 import "./App.css";
 
+import { setSearchField, requestRobots } from "../actions";
+
+const mapStateToProps = state => {
+	return {
+		search: state.searchRobots.search,
+		robots: state.requestRobots.robots,
+		isPending: state.requestRobots.isPending,
+		error: state.requestRobots.error
+	};
+};
+
+const mapDispatchToProps = dispatch => {
+	return {
+		handleInput: (event) => dispatch(setSearchField(event.target.value)),
+		onRequestRobots: () => dispatch(requestRobots())
+	};
+};
+
 class App extends React.Component {
 
-	state = {
-		robots: [],
-		search: ""
-	}
-
 	componentDidMount() {
-		fetch("https://jsonplaceholder.typicode.com/users")
-		.then(res => res.json())
-		.then(users => this.setState({robots: users}));
-	}
-
-	handleInput = (event) => {
-		this.setState({search: event.target.value});
+		this.props.onRequestRobots();
 	};
 
 	render() {
 
-		let { robots, search } = this.state;
-
+		let { search, handleInput, robots, isPending } = this.props;
 		let roboFilter = robots.filter(robot => robot.name.toLowerCase().includes(search.toLowerCase()));
 
-		return !robots.length ?
+		return isPending ?
 		
 		<h1 className="tc f1">Loading...</h1> :
 
 		(
 			<div className="tc">
 				<Title />
-				<SearchBox handleInput={this.handleInput} />
+				<SearchBox handleInput={handleInput} />
 				<Scroll>
 					<ErrorBoundry>
 						<CardList robots={roboFilter} />
@@ -44,7 +51,7 @@ class App extends React.Component {
 				</Scroll>
 			</div>
 		);	
-	}
+	};
 };
 
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
