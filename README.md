@@ -1,2 +1,2 @@
 # roboFriends
-Come on in and browse some of the hottest robot singles!
+A place for some of the hottest robot singles!
